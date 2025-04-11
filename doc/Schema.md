@@ -20,10 +20,10 @@ The following is an example data structure for a DynamoDB table designed to stor
 ## Attributes
 | Field Name | Type | Example/Description |
 |------------|------|---------------------|
-| `from_email` | String | `example@123.com` |
-| `email_body` | String | Promotional email content, e.g.:<br>`"your chance to save big on [product/service name]... [Offer valid only until [tomorrow's date]]"` |
-| `email_subject` | String | `"Exclusive offer"` |
-| `to_email` | String | `example@123.com` |
+| `from` | String | `example@123.com` |
+| `body` | String | Promotional email content, e.g.:<br>`"your chance to save big on [product/service name]... [Offer valid only until [tomorrow's date]]"` |
+| `subject` | String | `"Exclusive offer"` |
+| `to` | String | `example@123.com` |
 | `category` | String | `"Promotions"` |
 | `subcategory` | String | `"Sales"` |
 | `tags` | String Set | Supports multiple tags, e.g.:<br>- `"Exclusive Offer"`<br>- `"Limited Time"`<br>- `"Discount"` |
@@ -36,10 +36,10 @@ The following is an example data structure for a DynamoDB table designed to stor
 {
   "email_id": "test_001",
   "timestamp": "2025-04-09T14:30:00Z",
-  "from_email": "example@123.com",
-  "email_body": "your chance to save big on [product/service name]...",
-  "email_subject": "Exclusive offer",
-  "to_email": "example@123.com",
+  "from": "example@123.com",
+  "body": "your chance to save big on [product/service name]...",
+  "subject": "Exclusive offer",
+  "to": "example@123.com",
   "category": "Promotions",
   "subcategory": "Sales",
   "tags": ["Exclusive Offer", "Limited Time", "Discount"],
