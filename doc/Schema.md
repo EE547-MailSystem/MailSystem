@@ -3,6 +3,47 @@ userId String
 username String
 password String
 
+
 Table: Email
 EmailId String
 userId String
+# Email Data Table Structure
+
+The following is an example data structure for a DynamoDB table designed to store email information:
+
+## Primary Keys
+- **Partition Key**: `email_id` (String)  
+  Example: `test_001`
+- **Sort Key**: `timestamp` (String)  
+  Example: `2025-04-09T14:30:00Z` (ISO 8601 format)
+
+## Attributes
+| Field Name | Type | Example/Description |
+|------------|------|---------------------|
+| `from_email` | String | `example@123.com` |
+| `email_body` | String | Promotional email content, e.g.:<br>`"your chance to save big on [product/service name]... [Offer valid only until [tomorrow's date]]"` |
+| `email_subject` | String | `"Exclusive offer"` |
+| `to_email` | String | `example@123.com` |
+| `category` | String | `"Promotions"` |
+| `subcategory` | String | `"Sales"` |
+| `tags` | String Set | Supports multiple tags, e.g.:<br>- `"Exclusive Offer"`<br>- `"Limited Time"`<br>- `"Discount"` |
+| `summary` | String | Email content summary, e.g.:<br>`"Exclusive offer ending tomorrow with a chance to save big..."` |
+| `urgent_status` | Boolean | `True` or `False` |
+| `read_status` | Boolean | `True` or `False` |
+
+## Example JSON Representation
+```json
+{
+  "email_id": "test_001",
+  "timestamp": "2025-04-09T14:30:00Z",
+  "from_email": "example@123.com",
+  "email_body": "your chance to save big on [product/service name]...",
+  "email_subject": "Exclusive offer",
+  "to_email": "example@123.com",
+  "category": "Promotions",
+  "subcategory": "Sales",
+  "tags": ["Exclusive Offer", "Limited Time", "Discount"],
+  "summary": "Exclusive offer ending tomorrow...",
+  "urgent_status": true,
+  "read_status": false
+}
