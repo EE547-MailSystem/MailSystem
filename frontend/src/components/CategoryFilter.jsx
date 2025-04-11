@@ -1,0 +1,77 @@
+import React, { useState } from 'react';
+
+const CategoryFilter = ({ 
+  categories, 
+  selectedCategory, 
+  onCategoryChange,
+  categoryCounts,
+  importancePrompt,  // Changed from emails (we don't need emails prop here)
+  onUpdateImportancePrompt 
+}) => {
+  const [prompt, setPrompt] = useState(importancePrompt);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handlePromptSubmit = (e) => {
+    e.preventDefault();
+    onUpdateImportancePrompt(prompt);
+    setIsEditing(false);
+  };
+
+  return (
+    <div className="category-filter">
+      <h3>Categories</h3>
+      <ul>
+        {categories.map((category) => (
+          <li 
+            key={category}
+            className={`${selectedCategory === category || 
+              (category === 'all' && selectedCategory === '_important') ? 'active' : ''}`}
+            onClick={() => onCategoryChange(category)}
+          >
+            <div className="category-name">
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </div>
+            <span className="category-count">
+              {categoryCounts[category]}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <div className="important-emails-section">
+        <h4 
+          onClick={() => onCategoryChange('_important')}
+          className={`important-header ${
+            selectedCategory === '_important' ? 'important-active' : ''
+          }`}
+        >
+          Important Emails ({categoryCounts.important || 0})
+        </h4>
+      </div>
+
+      <div className="importance-prompt-section">
+        <h4>Importance Rules</h4>
+        {isEditing ? (
+          <form onSubmit={handlePromptSubmit}>
+            <textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="Define what makes an email important..."
+            />
+            <div className="prompt-actions">
+              <button type="submit">Save</button>
+              <button type="button" onClick={() => setIsEditing(false)}>
+                Cancel
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div className="prompt-display" onClick={() => setIsEditing(true)}>
+            {importancePrompt || "Click to set importance rules..."}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default CategoryFilter;
