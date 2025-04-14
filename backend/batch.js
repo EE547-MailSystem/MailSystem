@@ -80,6 +80,7 @@ class EmailStore {
   }
 }
 
+// Service
 const model = new ChatGroq({
   model: "llama-3.3-70b-versatile",
   temperature: 0
@@ -144,6 +145,7 @@ async function main() {
     try {
       const classifiedEmail = await classifyEmail(email);
       if (classifiedEmail) {
+        // DAO
         await emailStore.storeEmail(classifiedEmail);
       }
     } catch (error) {
