@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.787.0",
+    "@aws-sdk/lib-dynamodb": "^3.787.0",
+    "@langchain/core": "^0.3.43",
+    "@langchain/groq": "^0.2.0",
+    "dotenv": "^16.4.7",
+    "langchain": "^0.3.19"
+  }
+}
