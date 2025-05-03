@@ -1,120 +1,122 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import EmailList from './components/EmailList';
 import EmailDetail from './components/EmailDetail';
 import CategoryFilter from './components/CategoryFilter';
 import ImportantEmails from './components/ImportantEmails';
-import { mockEmails, categories, importancePrompt} from './data/mockEmails';
+import { 
+  fetchCategories,
+  fetchEmailsByCategory,
+  fetchEmailById,
+  updateImportancePrompt,
+  addNewCategories,
+  updateUrgentStatus
+} from './api/emailService';
 import './styles.css';
+
+const API_URL = "http://localhost:3000"
 
 function App() {
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [emails, setEmails] = useState(mockEmails);
-  const [importancePrompt, setImportancePrompt] = useState(
-    "Mark as important if: contains urgent action items, from company executives, or related to critical projects"
-  );
+  const [emails, setEmails] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [importancePrompt, setImportancePrompt] = useState('');
 
-const filteredEmails = selectedCategory === 'all' 
+  useEffect(() => {
+    const initializeData = async () => {
+      try {
+        const [cats, initialEmails] = await Promise.all([
+          fetchCategories(),
+          fetchEmailsByCategory('all')
+        ]);
+        setCategories(['all', ...cats]);
+        setEmails(initialEmails);
+      } catch (error) {
+        console.error("Initialization failed:", error);
+      }
+    };
+    initializeData();
+  }, []);
+
+  const handleCategoryChange = async (category) => {
+    setSelectedCategory(category);
+    setSelectedEmail(null);
+    try {
+      const emails = await fetchEmailsByCategory(category);
+      setEmails(emails);
+    } catch (error) {
+      console.error(`Failed to load ${category} emails:`, error);
+    }
+  };
+
+  const handleSelectEmail = async (email) => {
+    try {
+      const freshEmail = await fetchEmailById(email.id);
+      setSelectedEmail(freshEmail);
+      setEmails(emails.map(e => 
+        e.id === freshEmail.id ? { ...e, read_status: true } : e
+      ));
+    } catch (error) {
+      console.error("Failed to load email details:", error);
+      setSelectedEmail(email);
+    }
+  };
+
+  const handleUpdateImportancePrompt = async (newPrompt) => {
+    try {
+      const updatedPrompt = await updateImportancePrompt(newPrompt);
+      setImportancePrompt(updatedPrompt);
+      const updatedEmails = await fetchEmailsByCategory(selectedCategory);
+      setEmails(updatedEmails);
+    } catch (error) {
+      console.error("Failed to update prompt:", error);
+    }
+  };
+
+  const handleAddCategories = async (newCategories) => {
+    try {
+      const updatedCategories = await addNewCategories(newCategories);
+      setCategories(['all', ...updatedCategories]);
+    } catch (error) {
+      console.error("Failed to add categories:", error);
+    }
+  };
+
+  const toggleUrgentStatus = async (emailId, currentStatus) => {
+    try {
+      await updateUrgentStatus(emailId, !currentStatus);
+      setEmails(emails.map(email => 
+        email.id === emailId 
+          ? { ...email, urgent_status: !currentStatus } 
+          : email
+      ));
+      if (selectedEmail?.id === emailId) {
+        setSelectedEmail(prev => ({ ...prev, urgent_status: !currentStatus }));
+      }
+    } catch (error) {
+      console.error("Failed to update urgent status:", error);
+    }
+  };
+
+/*
+  const getCategoryCounts = () => {
+    const counts = { all: emails.length };
+    categories.forEach(cat => {
+      counts[cat] = emails.filter(e => 
+        e.category.toLowerCase() === cat.toLowerCase()
+      ).length;
+    });
+    counts.important = emails.filter(e => e.urgent_status).length;
+    return counts;
+  };
+*/
+  const filteredEmails = selectedCategory === 'all' 
   ? emails 
-  : selectedCategory === '_important'
+  : selectedCategory === 'important'
   ? emails.filter(e => e.urgent_status)
   : emails.filter(email => 
       email.category.toLowerCase() === selectedCategory.toLowerCase()
-      );
-
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    setSelectedEmail(null); // Clear selected email when changing category
-  };
-
-  const markAsRead = (emailId) => {
-    setEmails(emails.map(email => 
-      email.id === emailId ? { ...email, read: true } : email
-    ));
-  };
-
-  // related to backend
-  const handleUpdateImportancePrompt = async (newPrompt) => {
-    try {
-      const response = await fetch(`${API_URL}/importance-prompt`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-          prompt: newPrompt,
-          //update
-          user_email: "user@example.com" 
-        }),
-      });
-      
-      if (response.ok) {
-        const updatedEmails = await response.json();
-        setEmails(updatedEmails);
-      }
-    } catch (error) {
-      console.error("Error updating prompt:", error);
-    }
-  };
-
-const API_URL = "http://localhost:3000"
-
-const fetchEmailById = async (emailId) => {
-  try {
-    const response = await fetch(`${API_URL}/emails/1`);
-    const data = await response.json();
-    console.log(data);
-    if (response.status === 404) {
-      console.warn(`Email with ID ${emailId} not found`);
-      return null;
-    }
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const emailData = await response.json();
-    return emailData;
-  } catch (error) {
-    console.error("Error fetching email:", error);
-    return null;
-  }
-};
-
-const handleSelectEmail = async (email) => {
-  //const localEmail = emails.find(e => e.id === email.id);
-  //if (localEmail?.read_status) {
-  //  setSelectedEmail(localEmail);
-  //  return;
-  //}
-  const freshEmail = await fetchEmailById(email.id);
-  
-  if (freshEmail) {
-    setEmails(emails.map(e => 
-      e.id === freshEmail.id ? freshEmail : e
-    ));
-    setSelectedEmail(freshEmail);
-
-
-  } else {
-    setSelectedEmail(email);
-  }
-};
-
-
-  const getCategoryCounts = () => {
-    const counts = {};
-    categories.forEach(category => {
-      if (category === 'all') {
-        counts[category] = emails.length;
-      } else {
-        counts[category] = emails.filter(email => email.category === category).length;
-      }
-    });
-    counts._important = counts.important;
-    counts.important = emails.filter(e => e.important).length;
-    return counts;
-  };
-  
-  const categoryCounts = getCategoryCounts();
+    );
 
   return (
     <div className="app-container">
@@ -124,14 +126,13 @@ const handleSelectEmail = async (email) => {
       <div className="main-content">
         <aside className="sidebar">
           <CategoryFilter 
-            categories={categories} 
+            categories={['all', ...categories]}
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
-            categoryCounts={categoryCounts}
-            emails={emails}
-            //onSelectEmail={setSelectedEmail}
-            onSelectEmail={fetchEmailById}
+            //categoryCounts={getCategoryCounts()}
+            importancePrompt={importancePrompt}
             onUpdateImportancePrompt={handleUpdateImportancePrompt}
+            onAddCategories = {handleAddCategories}
           />
         </aside>
         <main className="email-content">
@@ -141,7 +142,10 @@ const handleSelectEmail = async (email) => {
             selectedEmailId={selectedEmail?.id}
           />
           {selectedEmail && (
-            <EmailDetail email={selectedEmail} />
+            <EmailDetail 
+            email={selectedEmail} 
+            onToggleUrgent = {toggleUrgentStatus}
+            />
           )}
         </main>
       </div>

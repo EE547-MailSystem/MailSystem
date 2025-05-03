@@ -1,7 +1,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 
-const EmailDetail = ({ email }) => {
+const EmailDetail = ({ email, onToggleUrgent }) => {
   return (
     <div className={`email-detail ${email.read_status ? 'read' : 'unread'}`}>
       <div className="email-detail-header">
@@ -9,7 +9,6 @@ const EmailDetail = ({ email }) => {
           <div><strong>From:</strong> {email.from}</div>
           <div><strong>Subject:</strong> {email.subject}</div>
           <div><strong>Date:</strong> {format(new Date(), 'PPPpp')}</div>
-          <div><strong>To:</strong> {email.to}</div>
         </div>
         <div className="email-meta">
           <span className={`category-badge ${email.category.toLowerCase()}`}>
@@ -26,6 +25,12 @@ const EmailDetail = ({ email }) => {
       <div className="email-body">
         {email.body}
       </div>
+      <button 
+        onClick={() => onToggleUrgent(email.id, email.urgent_status)}
+        className={email.urgent_status ? 'urgent-active' : ''}
+      >
+        {email.urgent_status ? '★ Urgent' : 'Mark as Urgent'}
+      </button>
     </div>
   );
 };
