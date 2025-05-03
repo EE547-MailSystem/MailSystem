@@ -1,6 +1,6 @@
-const app = require("./app");
+const app = require("./src/app");
 const PORT = process.env.PORT || 3000;
-const { startEmailListener } = require("./service/emailListerner");
+const { startEmailListener } = require("./src/service/emailListerner");
 
 startEmailListener();
 app.listen(PORT, () => {
