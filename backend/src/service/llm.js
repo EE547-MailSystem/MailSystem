@@ -20,7 +20,7 @@ class llm_classifier {
   }
 
   async init() {
-    const secret = await getSecret("llm/langchain");
+    const secret = await getSecret("langchain/api");
     this.client = new ChatGroq({
       apiKey: secret.GROQ_API_KEY,
       model: "llama-3.3-70b-versatile",
@@ -46,11 +46,17 @@ class llm_classifier {
         .replace("{TO_EMAIL}", to)
         .replace("{EMAIL_BODY}", body);
 
+      const messages = [
+        new SystemMessage(
+          "You are an email classifier. Respond with a valid JSON object in the specified format."
+        ),
+        new HumanMessage(filledPrompt),
+      ];
+
       // filled the user_attention part
       if (this.user_attention) {
         filledPrompt.replace("{USER_ATTENTION}", user_attention);
       }
-
       const result = await this.client.invoke(messages);
 
       // Parse the JSON response from LLM
