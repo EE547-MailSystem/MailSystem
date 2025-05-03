@@ -4,7 +4,7 @@ const app = express();
 app.use(express.json());
 
 const llm_service = require('../service/llm');
-const dao = require("../dao/dynamo")
+const dao = require("../src/dao/dynamo")
 
 app.post('/classify', async(req, res)=>{
     const{email,} = req.body;
