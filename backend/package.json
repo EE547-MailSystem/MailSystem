@@ -6,7 +6,11 @@
     "@langchain/groq": "^0.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+<<<<<<< HEAD
+    "express": "^5.1.0",
+=======
     "express": "^4.21.2",
+>>>>>>> bbb58b756136940f3c4e6a5e33e62c2654ff84ed
     "langchain": "^0.3.19"
   }
 }
