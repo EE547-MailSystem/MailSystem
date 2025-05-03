@@ -2,34 +2,40 @@ import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 
 const EmailList = ({ emails, onSelectEmail, selectedEmailId }) => {
-  if (emails.length === 0) {
-    return <div className="empty-list">No emails in this category</div>;
-  }
-
   return (
     <div className="email-list">
       {emails.map((email) => (
         <div 
-          key={email.id}
-          className={`email-item ${email.read ? 'read' : 'unread'} ${
-            selectedEmailId === email.id ? 'selected' : ''
+          key = {email.email_id}
+          // key={email.from + email.subject}
+          className={`email-item ${email.read_status ? 'read' : 'unread'} ${
+            selectedEmailId === email.from + email.subject ? 'selected' : ''
           }`}
           onClick={() => onSelectEmail(email)}
         >
           <div className="email-header">
-            <span className="email-sender">{email.sender}</span>
-            <span className="email-time">
-              {formatDistanceToNow(new Date(email.date))} ago
-            </span>
+            <div className="email-sender">{email.from}</div>
+            <div className="email-subject">{email.subject}</div>
           </div>
-          <div className="email-subject">{email.subject}</div>
-          <div className="email-preview">{email.preview}</div>
+
+          {email.tags && email.tags.length > 0 && (
+            <div className="email-tags-preview">
+              {email.tags.map(tag => (
+                <span key={tag} className="tag-preview">{tag}</span>
+              ))}
+            </div>
+          )}
+          
           <div className="email-meta">
-            <span className={`category-badge ${email.category}`}>
+            <span className="email-time">
+              {formatDistanceToNow(new Date(), { addSuffix: true })}
+            </span>
+            <span className={`category-badge ${email.category.toLowerCase()}`}>
               {email.category}
             </span>
-            {email.important && <span className="important-badge">Important</span>}
+            {email.urgent_status && <span className="urgent-badge">URGENT</span>}
           </div>
+          <div className="email-preview">{email.summary}</div>
         </div>
       ))}
     </div>

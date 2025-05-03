@@ -336,3 +336,90 @@ body {
     border-bottom: 1px solid #ddd;
   }
 }
+
+.urgent-badge {
+  background-color: #ef4444;
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
+
+.email-tags {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background-color: #e2e8f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.email-body {
+  white-space: pre-line;
+  line-height: 1.6;
+}
+
+/* Email List Item Styles */
+.email-header {
+  margin-bottom: 0.5rem;
+}
+
+.email-sender {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.email-item.read .email-sender {
+  font-weight: normal;
+  color: #64748b;
+}
+
+.email-subject {
+  font-size: 0.9rem;
+  color: #475569;
+  margin-top: 0.25rem;
+}
+
+.email-time {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-right: 0.5rem;
+}
+
+/* Email Detail Styles */
+.email-sender-detail {
+  margin-bottom: 1rem;
+}
+
+.email-sender-detail div {
+  margin-bottom: 0.25rem;
+}
+
+.email-detail .email-subject {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+}
+
+.email-tags-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0.5rem 0;
+}
+
+.tag-preview {
+  display: inline-block;
+  background-color: #e2e8f0;
+  color: #4a5568;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  line-height: 1;
+}

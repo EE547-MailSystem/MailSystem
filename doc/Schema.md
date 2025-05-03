@@ -12,10 +12,9 @@ userId String
 The following is an example data structure for a DynamoDB table designed to store email information:
 
 ## Primary Keys
-- **Partition Key**: `email_id` (String)  
+- **Partition Key**: `email_id` (String, it's the unique key in the dataset)  
   Example: `test_001`
-- **Sort Key**: `timestamp` (String)  
-  Example: `2025-04-09T14:30:00Z` (ISO 8601 format)
+
 
 ## Attributes
 | Field Name | Type | Example/Description |
@@ -25,7 +24,6 @@ The following is an example data structure for a DynamoDB table designed to stor
 | `subject` | String | `"Exclusive offer"` |
 | `to` | String | `example@123.com` |
 | `category` | String | `"Promotions"` |
-| `subcategory` | String | `"Sales"` |
 | `tags` | String Set | Supports multiple tags, e.g.:<br>- `"Exclusive Offer"`<br>- `"Limited Time"`<br>- `"Discount"` |
 | `summary` | String | Email content summary, e.g.:<br>`"Exclusive offer ending tomorrow with a chance to save big..."` |
 | `urgent_status` | Boolean | `True` or `False` |
@@ -41,7 +39,6 @@ The following is an example data structure for a DynamoDB table designed to stor
   "subject": "Exclusive offer",
   "to": "example@123.com",
   "category": "Promotions",
-  "subcategory": "Sales",
   "tags": ["Exclusive Offer", "Limited Time", "Discount"],
   "summary": "Exclusive offer ending tomorrow...",
   "urgent_status": true,
