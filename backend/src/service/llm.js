@@ -20,7 +20,7 @@ class llm_classifier {
   }
 
   async init() {
-    const secret = await getSecret("llm/langchain");
+    const secret = await getSecret("langchain/api");
     this.client = new ChatGroq({
       apiKey: secret.GROQ_API_KEY,
       model: "llama-3.3-70b-versatile",
