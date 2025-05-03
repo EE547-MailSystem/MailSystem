@@ -28,7 +28,7 @@ const receiveMessage = async (callback) => {
       const message = data.Messages[0];
       const info = JSON.parse(message.Body);
 
-      console.log("Received message:", info);
+      // console.log("Received message:", info);
       await callback(info);
       // const deleteParams = {
       //   QueueUrl: params.QueueUrl,

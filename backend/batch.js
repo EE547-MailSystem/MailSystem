@@ -12,7 +12,7 @@ const emails = [
     body: "Dear valued customer, we're excited to offer you an exclusive 50% discount on all items in our store. This offer is valid only until Friday. Use code SAVE50 at checkout. Don't miss out on these amazing savings!",
     from: "marketing@retailer.com",
     to: ["customer@email.com"],
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   },
   {
     email_id: "email_002",
@@ -20,7 +20,7 @@ const emails = [
     body: "Hello team, I'd like to schedule a meeting to discuss the kickoff for our new client project. Please let me know your availability for Thursday afternoon. Best regards, Sarah",
     from: "sarah.manager@company.com",
     to: ["team.member1@company.com", "team.member2@company.com"],
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   },
   {
     email_id: "email_003",
@@ -28,7 +28,7 @@ const emails = [
     body: "Hi John, It's been a while since we last spoke. How have you been? Would love to catch up over coffee next week if you're available. Let me know what works for you. Cheers, Mike",
     from: "mike.personal@gmail.com",
     to: ["john.friend@gmail.com"],
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   },
   {
     email_id: "email_004",
@@ -36,7 +36,7 @@ const emails = [
     body: "Welcome to our June tech newsletter! This month we cover: 1. Latest AI advancements 2. Upcoming developer conferences 3. New programming tools. Read more on our blog at...",
     from: "newsletter@tech.org",
     to: ["subscriber@email.com"],
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   },
   {
     email_id: "email_005",
@@ -44,37 +44,38 @@ const emails = [
     body: "Congratulations! You've been selected as our grand prize winner. Click here to claim your $1,000,000 prize. Limited time offer!",
     from: "prizes@dubious.com",
     to: ["random.user@email.com"],
-    timestamp: new Date().toISOString()
-  }
+    timestamp: new Date().toISOString(),
+  },
 ];
 
 const { ChatGroq } = require("@langchain/groq");
 const { HumanMessage, SystemMessage } = require("@langchain/core/messages");
 
-const { DynamoDBClient, ListTablesCommand } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, PutCommand } = require('@aws-sdk/lib-dynamodb');
+const {
+  DynamoDBClient,
+  ListTablesCommand,
+} = require("@aws-sdk/client-dynamodb");
+const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
 class EmailStore {
-  constructor(tableName = 'email') {
+  constructor(tableName = "email") {
     this.tableName = tableName;
-    const client = new DynamoDBClient({ 
-        region: 'us-east-2',
-      });
+    const client = new DynamoDBClient({
+      region: "us-east-2",
+    });
     this.docClient = DynamoDBDocumentClient.from(client);
   }
 
-
-
   async storeEmail(emailData) {
     let params = {
-        TableName: this.tableName,
-        Item: emailData
+      TableName: this.tableName,
+      Item: emailData,
     };
 
     const putCommand = new PutCommand(params);
     try {
-        await this.docClient.send(putCommand);
+      await this.docClient.send(putCommand);
     } catch (error) {
-      console.error('Error storing email:', error);
+      console.error("Error storing email:", error);
       throw error;
     }
   }
@@ -83,29 +84,35 @@ class EmailStore {
 // Service
 const model = new ChatGroq({
   model: "llama-3.3-70b-versatile",
-  temperature: 0
+  temperature: 0,
 });
 
 async function classifyEmail(email) {
   const filledPrompt = rawPrompt
-    .replace('{CATEGORY_TYPES}', defaultCategories.map(t => `"${t}"`).join(', '))
-    .replace('{SUBJECT}', email.subject)
-    .replace('{FROM_EMAIL}', email.from)
-    .replace('{TO_EMAIL}', email.to.join(', '))
-    .replace('{EMAIL_BODY}', email.body)
-    .replace('{USER_ATTENTION}', user_attention);
+    .replace(
+      "{CATEGORY_TYPES}",
+      defaultCategories.map((t) => `"${t}"`).join(", ")
+    )
+    .replace("{SUBJECT}", email.subject)
+    .replace("{FROM_EMAIL}", email.from)
+    .replace("{TO_EMAIL}", email.to.join(", "))
+    .replace("{EMAIL_BODY}", email.body)
+    .replace("{USER_ATTENTION}", user_attention);
 
   const messages = [
-    new SystemMessage("You are an email classifier. Respond with a valid JSON object in the specified format."),
+    new SystemMessage(
+      "You are an email classifier. Respond with a valid JSON object in the specified format."
+    ),
     new HumanMessage(filledPrompt),
   ];
 
   try {
     const result = await model.invoke(messages);
-    
+
     // Parse the JSON response from LLM
     let llmResponse;
     try {
+      console.log(result);
       llmResponse = JSON.parse(result.content);
     } catch (e) {
       console.error("Failed to parse LLM response:", result.content);
@@ -122,12 +129,12 @@ async function classifyEmail(email) {
       email_body: email.body,
       category: llmResponse.classification?.category || "Unknown",
       subcategory: llmResponse.classification?.subcategory || null,
-    //   confidence_score: llmResponse.classification?.confidence || 0,
+      //   confidence_score: llmResponse.classification?.confidence || 0,
       summary: llmResponse.summary || "",
       urgent_status: llmResponse.is_urgent || false,
-    //   action_required: llmResponse.action_required || false,
+      //   action_required: llmResponse.action_required || false,
       tags: llmResponse.tags || [],
-      read_status: false
+      read_status: false,
     };
 
     return dbData;
@@ -139,15 +146,15 @@ async function classifyEmail(email) {
 
 async function main() {
   const emailStore = new EmailStore();
-  
+
   // Process emails sequentially (better for debugging)
   for (const email of emails) {
     try {
       const classifiedEmail = await classifyEmail(email);
-      if (classifiedEmail) {
-        // DAO
-        await emailStore.storeEmail(classifiedEmail);
-      }
+      // if (classifiedEmail) {
+      //   // DAO
+      //   await emailStore.storeEmail(classifiedEmail);
+      // }
     } catch (error) {
       console.error(`Failed to process email ${email.email_id}:`, error);
     }

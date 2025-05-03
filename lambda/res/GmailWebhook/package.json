@@ -1,0 +1,21 @@
+{
+  "name": "gmailwebhookhandler",
+  "version": "1.0.0",
+  "main": "gmailWebhookHandler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.799.0",
+    "@aws-sdk/client-secrets-manager": "^3.799.0",
+    "@aws-sdk/client-sqs": "^3.799.0",
+    "@aws-sdk/lib-dynamodb": "^3.799.0",
+    "buffer": "^6.0.3",
+    "googleapis": "^148.0.0",
+    "mailparser": "^3.7.2"
+  }
+}

@@ -21,6 +21,7 @@
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "googleapis": "^105.0.0",
-    "mailparser": "^3.7.2"
+    "mailparser": "^3.7.2",
+    "readline-sync": "^1.4.10"
   }
 }
