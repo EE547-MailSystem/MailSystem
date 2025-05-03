@@ -10,5 +10,5 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/emails", emailRouter);
+app.use("/", emailRouter);
 module.exports = app;

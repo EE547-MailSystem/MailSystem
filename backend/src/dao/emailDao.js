@@ -41,8 +41,7 @@ class EmailDao {
     try {
       await this.docClient.send(command);
     } catch (error) {
-      console.error("Error storing email:", error);
-      throw error;
+      console.error("Error storing email:", error.name);
     }
   }
 

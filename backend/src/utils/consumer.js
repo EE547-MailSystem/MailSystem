@@ -1,19 +1,9 @@
 const {
-  SQSClient,
   ReceiveMessageCommand,
   DeleteMessageCommand,
 } = require("@aws-sdk/client-sqs");
-const { getSecret } = require("./secretManager.js");
 
-const receiveMessage = async (callback) => {
-  const secret = await getSecret("aws/access");
-  const sqs = new SQSClient({
-    region: "us-east-2",
-    credentials: {
-      accessKeyId: secret.AWS_ACCESS_KEY_ID,
-      secretAccessKey: secret.AWS_SECRET_ACCESS_KEY,
-    },
-  });
+const receiveMessage = async (sqs, callback) => {
   const params = {
     QueueUrl:
       "https://sqs.us-east-2.amazonaws.com/381492253717/EE547-MailSystem-Queue.fifo",
@@ -30,15 +20,13 @@ const receiveMessage = async (callback) => {
 
       // console.log("Received message:", info);
       await callback(info);
-      // const deleteParams = {
-      //   QueueUrl: params.QueueUrl,
-      //   ReceiptHandle: message.ReceiptHandle,
-      // };
+      const deleteParams = {
+        QueueUrl: params.QueueUrl,
+        ReceiptHandle: message.ReceiptHandle,
+      };
 
-      // await sqs.send(new DeleteMessageCommand(deleteParams));
-      // console.log("Message deleted successfully");
-    } else {
-      console.log("No messages received");
+      await sqs.send(new DeleteMessageCommand(deleteParams));
+      console.log("Message deleted successfully");
     }
   } catch (err) {
     console.error("Error receiving or processing message:", err);

@@ -8,8 +8,8 @@ const dao = require("../dao/emailDao");
 
 let llm_service;
 (async () => {
-  llm_service =  new llm_classifier()
-  await llm_service.init();
+  llm_service = new llm_classifier();
+  await llm_service.init();
 })();
 
 app.use(cors());
