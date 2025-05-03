@@ -27,7 +27,7 @@ class llm_classifier{
 
             // filled the prompt
             const filledPrompt = this.rawPrompt
-                .replace('{CATEGORY_TYPES}', this.categories.map(t => `"${t}"`).join(', '))
+                .replace('{CATEGORY_TYPES}', this.category.map(t => `"${t}"`).join(', '))
                 .replace('{SUBJECT}', subject)
                 .replace('{FROM_EMAIL}', from)
                 .replace('{TO_EMAIL}', to)
@@ -43,7 +43,7 @@ class llm_classifier{
                 new HumanMessage(filledPrompt),
             ];
 
-            const result = await model.invoke(messages);
+            const result = await this.client.invoke(messages);
             
             // Parse the JSON response from LLM
             let llmResponse;
