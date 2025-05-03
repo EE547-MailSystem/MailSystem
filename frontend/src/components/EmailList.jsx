@@ -6,7 +6,8 @@ const EmailList = ({ emails, onSelectEmail, selectedEmailId }) => {
     <div className="email-list">
       {emails.map((email) => (
         <div 
-          key={email.from + email.subject}
+          key = {email.email_id}
+          // key={email.from + email.subject}
           className={`email-item ${email.read_status ? 'read' : 'unread'} ${
             selectedEmailId === email.from + email.subject ? 'selected' : ''
           }`}

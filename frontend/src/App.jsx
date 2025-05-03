@@ -21,20 +21,30 @@ function App() {
   const [emails, setEmails] = useState([]);
   const [categories, setCategories] = useState([]);
   const [importancePrompt, setImportancePrompt] = useState('');
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const initializeData = async () => {
       try {
+        console.log("init the data, ", new Date());
         const [cats, initialEmails] = await Promise.all([
           fetchCategories(),
           fetchEmailsByCategory('all')
         ]);
+        console.log("already init the data, the category is: ", cats, " :", new Date());
+        console.log("the email: ", initialEmails);
         setCategories(['all', ...cats]);
         setEmails(initialEmails);
       } catch (error) {
         console.error("Initialization failed:", error);
-      }
+      } 
+      // finally {
+      //   // 数据拿完了，无论成功失败，都结束 loading
+      //   setLoading(false);
+      // }
     };
+    
     initializeData();
   }, []);
 
@@ -51,10 +61,13 @@ function App() {
 
   const handleSelectEmail = async (email) => {
     try {
-      const freshEmail = await fetchEmailById(email.id);
+      console.log("Select Email, email: ", email);
+      console.log("Select Email, email id: ", email.email_id);
+      const freshEmail = await fetchEmailById(email.email_id);
+      console.log("freshEmail: ", freshEmail);
       setSelectedEmail(freshEmail);
       setEmails(emails.map(e => 
-        e.id === freshEmail.id ? { ...e, read_status: true } : e
+        e.email_id === freshEmail.email_id ? { ...e, read_status: true } : e
       ));
     } catch (error) {
       console.error("Failed to load email details:", error);
@@ -98,18 +111,33 @@ function App() {
     }
   };
 
-/*
+
   const getCategoryCounts = () => {
     const counts = { all: emails.length };
+    console.log("getCategory Function, the counts: ", counts)
     categories.forEach(cat => {
-      counts[cat] = emails.filter(e => 
-        e.category.toLowerCase() === cat.toLowerCase()
-      ).length;
+      console.log("current category is ", cat);
+      if(cat.toLowerCase() != "all"){
+        console.log("the emails data is: ", emails);
+
+        emails.forEach(e => {
+          if (e.category == null) {
+            console.warn("email item missing category:", e);
+          }
+          if (cat == null) {
+            console.warn("categories array contains undefined:", categories);
+          }
+        });
+
+        counts[cat] = emails.filter(e => 
+          e.category.toLowerCase() === cat.toLowerCase()
+        ).length;
+      }
     });
     counts.important = emails.filter(e => e.urgent_status).length;
     return counts;
   };
-*/
+
   const filteredEmails = selectedCategory === 'all' 
   ? emails 
   : selectedCategory === 'important'
@@ -117,6 +145,15 @@ function App() {
   : emails.filter(email => 
       email.category.toLowerCase() === selectedCategory.toLowerCase()
     );
+
+
+  // if (loading) {
+  //   return (
+  //     <div className="loading-container">
+  //       <p>Loading…</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="app-container">
@@ -129,7 +166,7 @@ function App() {
             categories={['all', ...categories]}
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
-            //categoryCounts={getCategoryCounts()}
+            categoryCounts={getCategoryCounts()}
             importancePrompt={importancePrompt}
             onUpdateImportancePrompt={handleUpdateImportancePrompt}
             onAddCategories = {handleAddCategories}
@@ -139,7 +176,7 @@ function App() {
           <EmailList 
             emails={filteredEmails} 
             onSelectEmail={handleSelectEmail}
-            selectedEmailId={selectedEmail?.id}
+            selectedEmailId={selectedEmail?.email_id}
           />
           {selectedEmail && (
             <EmailDetail 
