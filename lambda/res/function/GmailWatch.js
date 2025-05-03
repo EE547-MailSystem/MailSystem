@@ -1,8 +1,8 @@
 const express = require("express");
 const { google } = require("googleapis");
 const bodyParser = require("body-parser");
-const { getSecret } = require("../util/secretManager.js");
-const { getHeader, getBody } = require("../util/EmailParser.js");
+const { getSecret } = require("../utils/secretManager.js");
+const { getHeader, getBody } = require("../utils/EmailParser.js");
 const { sendMessage } = require("./producer.js");
 
 const app = express();
