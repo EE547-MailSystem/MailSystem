@@ -406,3 +406,20 @@ body {
   font-weight: 600;
   margin: 0.5rem 0;
 }
+
+.email-tags-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0.5rem 0;
+}
+
+.tag-preview {
+  display: inline-block;
+  background-color: #e2e8f0;
+  color: #4a5568;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  line-height: 1;
+}

@@ -6,7 +6,8 @@ const EmailList = ({ emails, onSelectEmail, selectedEmailId }) => {
     <div className="email-list">
       {emails.map((email) => (
         <div 
-          key={email.from + email.subject}
+          key = {email.email_id}
+          // key={email.from + email.subject}
           className={`email-item ${email.read_status ? 'read' : 'unread'} ${
             selectedEmailId === email.from + email.subject ? 'selected' : ''
           }`}
@@ -16,6 +17,15 @@ const EmailList = ({ emails, onSelectEmail, selectedEmailId }) => {
             <div className="email-sender">{email.from}</div>
             <div className="email-subject">{email.subject}</div>
           </div>
+
+          {email.tags && email.tags.length > 0 && (
+            <div className="email-tags-preview">
+              {email.tags.map(tag => (
+                <span key={tag} className="tag-preview">{tag}</span>
+              ))}
+            </div>
+          )}
+          
           <div className="email-meta">
             <span className="email-time">
               {formatDistanceToNow(new Date(), { addSuffix: true })}
