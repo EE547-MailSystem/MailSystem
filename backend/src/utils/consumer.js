@@ -27,8 +27,6 @@ const receiveMessage = async (sqs, callback) => {
 
       await sqs.send(new DeleteMessageCommand(deleteParams));
       console.log("Message deleted successfully");
-    } else {
-      console.log("No messages received");
     }
   } catch (err) {
     console.error("Error receiving or processing message:", err);
