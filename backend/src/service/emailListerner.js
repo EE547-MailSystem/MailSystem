@@ -19,9 +19,7 @@ const startEmailListener = async () => {
     }
 
     try {
-      const result = await llm_service.classify(email, false);
-      console.log(result);
-      dynamoDao.storeEmail(result);
+      llm_service.classify(email);
       console.log(`email-${email["id"]} classify request successful`);
     } catch (error) {
       console.log(`email-${email["id"]} classify request error: ${error}`);
