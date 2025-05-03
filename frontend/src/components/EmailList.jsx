@@ -16,6 +16,15 @@ const EmailList = ({ emails, onSelectEmail, selectedEmailId }) => {
             <div className="email-sender">{email.from}</div>
             <div className="email-subject">{email.subject}</div>
           </div>
+
+          {email.tags && email.tags.length > 0 && (
+            <div className="email-tags-preview">
+              {email.tags.map(tag => (
+                <span key={tag} className="tag-preview">{tag}</span>
+              ))}
+            </div>
+          )}
+          
           <div className="email-meta">
             <span className="email-time">
               {formatDistanceToNow(new Date(), { addSuffix: true })}

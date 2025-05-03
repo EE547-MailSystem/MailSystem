@@ -5,16 +5,25 @@ const CategoryFilter = ({
   selectedCategory, 
   onCategoryChange,
   categoryCounts,
-  importancePrompt,  // Changed from emails (we don't need emails prop here)
-  onUpdateImportancePrompt 
+  importancePrompt,
+  onUpdateImportancePrompt,
+  onAddCategories 
 }) => {
   const [prompt, setPrompt] = useState(importancePrompt);
   const [isEditing, setIsEditing] = useState(false);
+  const [newCategory, setNewCategory] = useState('');
 
   const handlePromptSubmit = (e) => {
     e.preventDefault();
     onUpdateImportancePrompt(prompt);
     setIsEditing(false);
+  };
+
+  const handleAddCategory = async () => {
+    if (newCategory.trim()) {
+      await onAddCategories([newCategory.trim()]);
+      setNewCategory('');
+    }
   };
 
   return (
@@ -69,6 +78,15 @@ const CategoryFilter = ({
             {importancePrompt || "Click to set importance rules..."}
           </div>
         )}
+      </div>
+
+      <div className="add-category">
+        <input 
+          value={newCategory}
+          onChange={(e) => setNewCategory(e.target.value)}
+          placeholder="New category name"
+        />
+        <button onClick={handleAddCategory}>Add</button>
       </div>
     </div>
   );

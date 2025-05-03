@@ -1,5 +1,5 @@
 const express = require("express");
-
+const cors = require("cors");
 const app = express();
 app.use(express.json());
 
@@ -8,9 +8,11 @@ const dao = require("../dao/emailDao");
 
 let llm_service;
 (async () => {
-  llm_service = new llm_classifier()
-  await llm_service.init();
+  llm_service =  new llm_classifier()
+  await llm_service.init();
 })();
+
+app.use(cors());
 
 app.post("/classify", async (req, res) => {
   const { email } = req.body;
