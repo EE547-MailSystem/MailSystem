@@ -51,13 +51,6 @@ class llm_classifier {
         filledPrompt.replace("{USER_ATTENTION}", user_attention);
       }
 
-      const messages = [
-        new SystemMessage(
-          "You are an email classifier. Respond with a valid JSON object in the specified format."
-        ),
-        new HumanMessage(filledPrompt),
-      ];
-
       const result = await this.client.invoke(messages);
 
       // Parse the JSON response from LLM
@@ -69,7 +62,7 @@ class llm_classifier {
           .trim();
         llmResponse = JSON.parse(result.content);
       } catch (e) {
-        // console.error("Failed to parse LLM response:", result.content);
+        console.error("Failed to parse LLM response:", result.content);
         throw e;
       }
 

@@ -12,7 +12,7 @@ let llm_service;
 })();
 
 app.post("/classify", async (req, res) => {
-  const { email, user_categories = [], user_attention = "" } = req.body;
+  const { email } = req.body;
 
   // check the email data structure
   if (
@@ -30,10 +30,12 @@ app.post("/classify", async (req, res) => {
   }
 
   try {
-    const result = llm_service.classify(email, user_categories, user_attention);
+    const result = llm_service.classify(email);
 
     console.log(`email-${email["id"]} classify request successful`);
-    res.status(200).json({ success: true, email_id: email["id"] });
+    res
+      .status(200)
+      .json({ success: true, email_id: email["id"], result: result });
   } catch (error) {
     console.log(`email-${email["id"]} classify request error: ${error}`);
     res.status(500).json({
