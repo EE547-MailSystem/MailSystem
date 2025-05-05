@@ -30,7 +30,7 @@ jobs:
         run: |
           cd backend
           docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/ee547/mail-system:latest .
-          cd ../classifer
+          cd ../classifier
           docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/ee547/classifier:latest .
 
       - name: Tag Docker image
