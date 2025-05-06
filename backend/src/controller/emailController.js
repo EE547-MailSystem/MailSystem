@@ -13,7 +13,7 @@ let llm_service;
 })();
 
 // All Test Successfully
-router.get("/emails/:category/preview", async (req, res) => {
+router.get("/emails/:category/preview", authorization,async (req, res) => {
   const { category } = req.params;
   try {
     let items;
@@ -47,7 +47,7 @@ router.get("/categories", authorization, async (req, res) => {
 });
 
 // GET /emails/:id
-router.get("/emails/:id", async (req, res) => {
+router.get("/emails/:id", authorization,async (req, res) => {
   const { id } = req.params;
   try {
     const email = await dao.queryById(id);
@@ -63,7 +63,7 @@ router.get("/emails/:id", async (req, res) => {
 
 // POST /urgentStatus
 // 更新 邮件 的 urgent_status
-router.post("/urgentStatus", async (req, res) => {
+router.post("/urgentStatus", authorization,async (req, res) => {
   const { email_id, urgent_status } = req.body;
   if (typeof email_id !== "string" || typeof urgent_status !== "boolean") {
     return res.status(400).send("Wrong Value");
@@ -82,7 +82,7 @@ router.post("/urgentStatus", async (req, res) => {
 
 // POST /urgentStatus
 // 更新 邮件 的 read_status
-router.post("/readtStatus", async (req, res) => {
+router.post("/readStatus", authorization,async (req, res) => {
   const { email_id, read_status } = req.body;
   if (typeof email_id !== "string" || typeof read_status !== "boolean") {
     return res.status(400).send("Wrong Value");
@@ -103,7 +103,7 @@ router.post("/readtStatus", async (req, res) => {
 
 // need more validation
 // POST /categories
-router.post("/categories", async (req, res) => {
+router.post("/categories",authorization,async (req, res) => {
   const { newAdd_categories } = req.body;
   if (
     !Array.isArray(newAdd_categories) ||
@@ -126,7 +126,7 @@ router.post("/categories", async (req, res) => {
 //     return res.status(200).json({ importancePrompt });
 // });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", authorization,async (req, res) => {
   const data = {
     id: "001",
     timestamp: "YYYY-MM-DD",

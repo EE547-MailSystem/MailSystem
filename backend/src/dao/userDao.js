@@ -23,7 +23,6 @@ const {
         console.error("connecting error:", error);
       }
     };
-
     async existsUser(userId) {
         const params = {
             TableName: "User",
@@ -37,7 +36,13 @@ const {
         }
         
     }
-
+    async getTokenRecord(userid) {
+        const res = await this.docClient.send(new GetCommand({
+          TableName: this.tableName,
+          Key: { user_id: userid }
+        }));
+        return res.Item || null;
+      }
   }
 
   module.exports = new UserDao();
