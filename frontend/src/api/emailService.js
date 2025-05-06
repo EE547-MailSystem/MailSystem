@@ -9,14 +9,32 @@ export const fetchCategories = async () => {
 };
 
 // GET all emails of one Category
+// export const fetchEmailsByCategory = async (category) => {
+//   const endpoint = category === 'all' 
+//     ? `${API_URL}/emails/all/preview` 
+//     : `${API_URL}/emails/${category}/preview`; 
+//   const response = await fetch(endpoint);
+//   if (!response.ok) throw new Error(`Failed to fetch ${category} emails`);
+//   return await response.json();
+// };
+
+
+// GET all emails of one Category
 export const fetchEmailsByCategory = async (category) => {
-  const endpoint = category === 'all' 
-    ? `${API_URL}/emails/all/preview` 
-    : `${API_URL}/emails/${category}/preview`; 
-  const response = await fetch(endpoint);
-  if (!response.ok) throw new Error(`Failed to fetch ${category} emails`);
-  return await response.json();
-};
+    const endpoint = category === 'all' 
+      ? `${API_URL}/emails/all/preview` 
+      : `${API_URL}/emails/${category}/preview`; 
+    const response = await fetch(endpoint);
+    //if (!response.ok) throw new Error(`Failed to fetch ${category} emails`);
+    //return await response.json();
+    const data = await response.json();
+    return data.map(email => ({
+      ...email,
+      tags: Array.isArray(email.tags) ? email.tags : 
+            email.tags ? [email.tags] : []
+    }));
+  };
+
 
 // GET specific email object by ID
 export const fetchEmailById = async (id) => {

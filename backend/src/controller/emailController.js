@@ -3,6 +3,8 @@ const router = express.Router();
 
 const llm_classifier = require("../service/llm");
 const dao = require("../dao/emailDao");
+const authorization = require("../utils/authentication");
+
 
 let llm_service;
 (async () => {
@@ -31,7 +33,7 @@ router.get("/emails/:category/preview", async (req, res) => {
 });
 
 // GET /categories
-router.get("/categories", async (req, res) => {
+router.get("/categories", authorization, async (req, res) => {
   try {
     const categories = await llm_service.getCategory();
     if (categories.length === 0) {
