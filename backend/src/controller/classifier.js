@@ -119,7 +119,7 @@ app.post("/urgentStatus", async (req, res) => {
 
 // POST /urgentStatus
 // 更新 邮件 的 read_status
-app.post("/readtStatus", async (req, res) => {
+app.post("/readStatus", async (req, res) => {
   const { email_id, read_status } = req.body;
   if (typeof email_id !== "string" || typeof read_status !== "boolean") {
     return res.status(400).send("Wrong Value");

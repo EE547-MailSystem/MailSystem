@@ -1,5 +1,6 @@
-// Interation with backend
-const API_URL = "http://localhost:3000";
+// Interaction with backend
+const API_URL = "http://localhost:3000"
+//const API_URL = "http://18.224.100.253:3000";
 
 // GET the list of catogory
 export const fetchCategories = async () => {
@@ -14,8 +15,14 @@ export const fetchEmailsByCategory = async (category) => {
     ? `${API_URL}/emails/all/preview` 
     : `${API_URL}/emails/${category}/preview`; 
   const response = await fetch(endpoint);
-  if (!response.ok) throw new Error(`Failed to fetch ${category} emails`);
-  return await response.json();
+  //if (!response.ok) throw new Error(`Failed to fetch ${category} emails`);
+  //return await response.json();
+  const data = await response.json();
+  return data.map(email => ({
+    ...email,
+    tags: Array.isArray(email.tags) ? email.tags : 
+          email.tags ? [email.tags] : []
+  }));
 };
 
 // GET specific email object by ID
@@ -55,6 +62,20 @@ export const updateUrgentStatus = async (emailId, urgentStatus) => {
     body: JSON.stringify({ 
       email_id: emailId,
       urgent_status: urgentStatus 
+    })
+  });
+  if (!response.ok) throw new Error('Failed to update status');
+  return await response.json();
+};
+
+// POST read status
+export const updateReadStatus = async (emailId, readStatus) => {
+  const response = await fetch(`${API_URL}/readStatus`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      email_id: emailId,
+      read_status: readStatus 
     })
   });
   if (!response.ok) throw new Error('Failed to update status');

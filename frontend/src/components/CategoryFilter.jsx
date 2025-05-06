@@ -26,11 +26,15 @@ const CategoryFilter = ({
     }
   };
 
+  const displayCategories = categories.filter(
+    (cat, index) => categories.indexOf(cat) === index
+  );
+
   return (
     <div className="category-filter">
       <h3>Categories</h3>
       <ul>
-        {categories.map((category) => (
+        {displayCategories.map((category) => (
           <li 
             key={category}
             className={`${selectedCategory === category || 
@@ -41,7 +45,7 @@ const CategoryFilter = ({
               {category.charAt(0).toUpperCase() + category.slice(1)}
             </div>
             <span className="category-count">
-              {categoryCounts[category]}
+              {categoryCounts[category] || 0}
             </span>
           </li>
         ))}
