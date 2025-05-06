@@ -1,7 +1,6 @@
-const jwt          = require('jsonwebtoken');
-const { getTokenRecord } = require('../dynamoTokenDao');
-const { tokeDao }     = require('../dao/tokenDao');
-const {userDao} = require('../dao/userDao')
+const jwt = require('jsonwebtoken');
+const  tokenDao = require('../dao/tokenDao');
+const userDao = require('../dao/userDao')
 
 module.exports = async function authenticateToken(req, res, next) {
   const user_token = req.headers.authorization || '';
@@ -10,18 +9,20 @@ module.exports = async function authenticateToken(req, res, next) {
 
   try {
     // 验签
-    const JWT_SECRET = tokeDao.getTokenRecord("token1");
+    const JWT_SECRET = await tokenDao.getTokenRecord("token1");
 
-    const payload = jwt.verify(user_token, JWT_SECRET);
+    const payload = jwt.verify(user_token, JWT_SECRET.secret);
 
-    req.user = { id: payload.sub, username: payload.username };
+    req.user = { id: payload.sub, type: payload.username };
 
-    const exists_result = userDao.existsUser(payload.sub);
+    const exists_result = await userDao.existsUser(payload.sub);
     if(exists_result){
         console.log(exists_result);
         next();
     }
-    throw new Error("User doesn't exist")
+    else{
+      throw new Error("User doesn't exist");
+    }
   } catch (err) {
     return res.status(403).json({ message: 'Token invalid' });
   }
