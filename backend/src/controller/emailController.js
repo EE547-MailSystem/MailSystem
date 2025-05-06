@@ -82,7 +82,7 @@ router.post("/urgentStatus", async (req, res) => {
 
 // POST /urgentStatus
 // 更新 邮件 的 read_status
-router.post("/readtStatus", async (req, res) => {
+router.post("/readStatus", async (req, res) => {
   const { email_id, read_status } = req.body;
   if (typeof email_id !== "string" || typeof read_status !== "boolean") {
     return res.status(400).send("Wrong Value");

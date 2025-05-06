@@ -1,5 +1,4 @@
 const jwt          = require('jsonwebtoken');
-const { getTokenRecord } = require('../dynamoTokenDao');
 const { tokeDao }     = require('../dao/tokenDao');
 const {userDao} = require('../dao/userDao')
 
@@ -8,9 +7,9 @@ module.exports = async function authenticateToken(req, res, next) {
 
   if (!user_token) return res.status(401).json({ message: '缺少 token' });
 
-  try {
+  // try {
     // 验签
-    const JWT_SECRET = tokeDao.getTokenRecord("token1");
+    const JWT_SECRET = await tokeDao.getTokenRecord("token1");
 
     const payload = jwt.verify(user_token, JWT_SECRET);
 
@@ -22,7 +21,7 @@ module.exports = async function authenticateToken(req, res, next) {
         next();
     }
     throw new Error("User doesn't exist")
-  } catch (err) {
-    return res.status(403).json({ message: 'Token invalid' });
-  }
+  // } catch (err) {
+  //   return res.status(403).json({ message: 'Token invalid' });
+  // }
 };
