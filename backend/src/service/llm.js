@@ -30,7 +30,7 @@ class llm_classifier {
     return this;
   }
 
-  async classify(email, update_flag = false) {
+  async classify(email, update_flag) {
     try {
       const { id, timestamp, to, from, subject, body } = email;
       console.log(`Processing email #${id} from ${from} to ${to}`);
@@ -73,10 +73,17 @@ class llm_classifier {
       }
 
       // updating category
-      if (update_flag) {
+      if (update_flag == "update_category") {
         const new_category = llmResponse.classification?.category || "Unknown";
         if (new_category != email["category"]) {
           emailDao.updateCategoty(id, new_category);
+        }
+      }
+      // updating urgent status
+      else if(update_flag == "update_urgent"){
+        const urgent_status = llmResponse.is_urgent || false;
+        if(urgent_status != email["urgent_status"]){
+          emailDao.updateUrgentStatus(id, urgent_status);
         }
       }
       // new classify
@@ -131,10 +138,10 @@ class llm_classifier {
     this.category = [...this.category, ...validation["filter"]];
 
     // get all data
-    const allData = emailDao.queryAllCategoryUpdate();
+    const allData = await emailDao.queryAllCategoryUpdate();
 
-    for (data in allData) {
-      await this.classify(data);
+    for (const data of allData) {
+      await this.classify(data, "update_category");
     }
     return this.category;
   }
@@ -142,6 +149,17 @@ class llm_classifier {
   async getCategory() {
     return this.category;
   }
+
+  async updateAttention(user_prompt){
+    this.user_attention = user_prompt;
+    // get all data
+    const allData = emailDao.queryAllCategoryUpdate();
+
+    for (data in allData) {
+      await this.classify(data, update_flag = "update_category");
+    }
+  } 
+
 }
 
 module.exports = llm_classifier;
