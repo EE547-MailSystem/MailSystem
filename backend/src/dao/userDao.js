@@ -22,27 +22,22 @@ const {
       } catch (error) {
         console.error("connecting error:", error);
       }
+    };
+
+    async existsUser(userId) {
+        const params = {
+            TableName: "User",
+            Key: { user_id: userId }
+        };
+        try{
+            const { Item } = await this.docClient.send(new GetCommand(params));
+            return Item;  
+        }catch(error){
+            console.error("connecting error:", error);
+        }
+        
     }
 
-    async getTokenRecord(userid) {
-        const res = await this.docClient.send(new GetCommand({
-          TableName: this.tableName,
-          Key: { userid }
-        }));
-        return res.Item || null;
-      }
-
   }
-
-// (async () => {
-//     const tokenDao = new TokenDao();
-//     try {
-//       const result = await tokenDao.getTokenRecord("token1");
-//       console.log("Token record:", result);
-//     } catch (err) {
-//       console.error("Error fetching token:", err);
-//     }
-//   })();
-
 
   module.exports = new UserDao();
