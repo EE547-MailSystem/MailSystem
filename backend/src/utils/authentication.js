@@ -5,8 +5,10 @@ const userDao = require('../dao/userDao')
 module.exports = async function authenticateToken(req, res, next) {
   const user_token = req.headers.authorization || '';
 
-  if (!user_token) return res.status(401).json({ message: '缺少 token' });
-
+  if (!user_token){
+    console.log({ message: 'token lacked' });
+  }
+  
   try {
     // 验签
     const JWT_SECRET = await tokenDao.getTokenRecord("token1");
