@@ -61,7 +61,6 @@ exports.handler = async (event) => {
         emailId: email.data.id,
         from: parsed.from?.text,
         subject: parsed.subject,
-        body: parsed.text,
       });
 
       await sendMessage({
@@ -70,7 +69,7 @@ exports.handler = async (event) => {
         to: parsed.to?.text,
         subject: parsed.subject,
         timestamp: parsed.date?.toString(),
-        body: parsed.text,
+        body: parsed.html || parsed.textAsHtml || parsed.text,
       });
 
       log.info("Pushed email to SQS", {
