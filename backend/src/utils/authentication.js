@@ -4,25 +4,25 @@ const { tokeDao }     = require('../dao/tokenDao');
 const {userDao} = require('../dao/userDao')
 
 module.exports = async function authenticateToken(req, res, next) {
-  const auth = req.headers.authorization || '';
-//   const token = auth.split(' ')[1];
-  try{
-    user_token = userDao.getTokenRecord()
-  }catch(err){
-    return res.status(403).json({ message: 'invalid user name' });
-  }
+  const user_token = req.headers.authorization || '';
 
-  if (!token) return res.status(401).json({ message: '缺少 token' });
+  if (!user_token) return res.status(401).json({ message: '缺少 token' });
 
   try {
     // 验签
     const JWT_SECRET = tokeDao.getTokenRecord("token1");
 
-    const payload = jwt.verify(token, JWT_SECRET);
+    const payload = jwt.verify(user_token, JWT_SECRET);
 
     req.user = { id: payload.sub, username: payload.username };
-    next();
+
+    const exists_result = userDao.existsUser(payload.sub);
+    if(exists_result){
+        console.log(exists_result);
+        next();
+    }
+    throw new Error("User doesn't exist")
   } catch (err) {
-    return res.status(403).json({ message: 'Token 无效或已过期' });
+    return res.status(403).json({ message: 'Token invalid' });
   }
 };
