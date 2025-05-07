@@ -116,15 +116,17 @@ router.post("/categories", async (req, res) => {
 });
 
 // // POST /prompt not implemented
-// app.post('/prompt', async (req, res) => {
-//     const { user_prompt } = req.body;
-//     if (typeof user_prompt !== 'string' || !user_prompt.trim()) {
-//       return res.status(400).send('Wrong Value');
-//     }
-//     // TODO: 在这里调用你的业务逻辑来生成真正的 ImportancePrompt
-//     const importancePrompt = user_prompt.trim();
-//     return res.status(200).json({ importancePrompt });
-// });
+router.post('/prompt', async (req, res) => {
+    const { user_prompt } = req.body;
+    if (typeof user_prompt !== 'string' || !user_prompt.trim()) {
+      return res.status(400).send('Wrong Value');
+    }
+    // TODO: 在这里调用你的业务逻辑来生成真正的 ImportancePrompt
+    const importancePrompt = user_prompt.trim();
+    await llm_service.updateAttention(importancePrompt);
+    // updateAttention(importancePrompt);
+    return res.status(200).json({ importancePrompt });
+});
 
 router.get("/:id", async (req, res) => {
   const data = {
