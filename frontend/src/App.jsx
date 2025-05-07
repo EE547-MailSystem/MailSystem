@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import EmailList from './components/EmailList';
 import EmailDetail from './components/EmailDetail';
 import CategoryFilter from './components/CategoryFilter';
-import ImportantEmails from './components/ImportantEmails';
 import { 
   fetchCategories,
   fetchEmailsByCategory,
@@ -14,8 +13,8 @@ import {
 } from './api/emailService';
 import './styles.css';
 
-//const API_URL = "http://18.224.100.253:3000"
-const API_URL = "http://localhost:3000"
+//const API_URL = "http://localhost:3000"
+const API_URL = "http://18.224.100.253:8080"
 
 function App() {
   const [selectedEmail, setSelectedEmail] = useState(null);

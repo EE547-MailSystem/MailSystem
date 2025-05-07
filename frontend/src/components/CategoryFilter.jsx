@@ -85,6 +85,7 @@ const CategoryFilter = ({
       </div>
 
       <div className="add-category">
+      <h4>Add New Category</h4>
         <input 
           value={newCategory}
           onChange={(e) => setNewCategory(e.target.value)}

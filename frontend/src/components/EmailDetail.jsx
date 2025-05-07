@@ -9,7 +9,7 @@ const EmailDetail = ({ email, onToggleUrgent }) => {
         <div className="email-sender-detail">
           <div><strong>From:</strong> {email.from_email}</div>
           <div><strong>Subject:</strong> {email.email_subject}</div>
-          <div><strong>Date:</strong> {format(new Date(), 'PPPpp')}</div>
+          <div><strong>Date:</strong> {format(new Date(email.timestamp), 'PPPpp')}</div>
         </div>
         <div className="email-meta">
           <span className={`category-badge ${email.category.toLowerCase()}`}>
@@ -23,9 +23,14 @@ const EmailDetail = ({ email, onToggleUrgent }) => {
           ))}
         </div>
       </div>
-      <div className="email-body">
-        {email.email_body}
-      </div>
+      {/* <div className="email-body"> */}
+        {/* {email.email_body} */}
+        {/* dangerouslySetInnerHTML={{ __html: email.email_body }} */}
+      {/* </div> */}
+      <div
+        className="email-body"
+        dangerouslySetInnerHTML={{ __html: email.email_body }}
+      />
       <button 
         onClick={() => onToggleUrgent(email.email_id, email.urgent_status)}
         className={email.urgent_status ? 'urgent-active' : ''}
