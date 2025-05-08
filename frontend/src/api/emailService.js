@@ -1,6 +1,6 @@
 // Interaction with backend
-//const API_URL = "http://18.224.100.253:8080"
-const API_URL = "http://localhost:3000"
+const API_URL = "http://18.224.100.253:8080"
+//const API_URL = "http://localhost:3000"
 const Authorization_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMSIsInVzZXJuYW1lIjoidXNlciIsImlhdCI6MTc0NjU1ODM4MX0.X3XfAqK_gYTUIAh_9NSgnUfxDSb86lgUt7vwCjuMkw0"
 
 // GET the list of catogory

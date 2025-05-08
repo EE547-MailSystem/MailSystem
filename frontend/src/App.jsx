@@ -14,8 +14,8 @@ import {
 } from './api/emailService';
 import './styles.css';
 
-const API_URL = "http://localhost:3000"
-//const API_URL = "http://18.224.100.253:8080"
+//const API_URL = "http://localhost:3000"
+const API_URL = "http://18.224.100.253:8080"
 
 function App() {
   const [selectedEmail, setSelectedEmail] = useState(null);
@@ -116,14 +116,38 @@ function App() {
     }
   };
 
-  const handleAddCategories = async (newCategories) => {
-    try {
-      const updatedCategories = await addNewCategories(newCategories);
-      setCategories(['all', ...updatedCategories]);
-    } catch (error) {
-      console.error("Failed to add categories:", error);
-    }
-  };
+  // const handleAddCategories = async (newCategories) => {
+  //   try {
+  //     const updatedCategories = await addNewCategories(newCategories);
+  //     setCategories(['all', ...updatedCategories]);
+  //   } catch (error) {
+  //     console.error("Failed to add categories:", error);
+  //   }
+  // };
+
+      const handleAddCategories = async (newCategories) => {
+        try {
+          const lowerExist = categories.map(c => c.toLowerCase());
+          const uniqueNew = newCategories.filter(c => !lowerExist.includes(c.toLowerCase()));
+    
+        if (uniqueNew.length != 0) {
+          setCategories([...categories, ...uniqueNew]);
+          await addNewCategories(uniqueNew);
+          return;
+         }
+    
+    
+          // const updatedCategories = await addNewCategories(newCategories);
+          // setCategories(['all', ...updatedCategories]);
+         } catch (error) {
+          console.error("Failed to add categories:", error);
+        }
+      };
+
+
+
+
+
 
   const toggleUrgentStatus = async (emailId, currentStatus) => {
     try {
