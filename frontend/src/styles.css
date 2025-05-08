@@ -15,7 +15,7 @@ body {
   overflow: hidden;
 }
 
-.app-header {
+/* .app-header {
   background-color: #2c3e50;
   color: white;
   padding: 1rem;
@@ -30,27 +30,127 @@ body {
   flex-direction: column;
   justify-content: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+} */
+
+.app-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  /* color: white; */
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  max-height: 15vh;
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.header-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 24px;
+  height: 24px;
+  color: #5c6bc0;
+}
+
+.app-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.title-highlight {
+  color: #5c6bc0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.header-button {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: #666;
+  border-radius: 4px;
+}
+
+.header-button:hover {
+  background-color: #f5f5f5;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
 }
 
 .main-content {
   display: flex;
   flex: 1;
   min-height: 0;
+  height: calc(100vh - 60px);
 }
 
 .sidebar {
-  width: 200px;
+  width: 250px;
   background-color: #34495e;
   color: white;
   padding: 1rem;
   flex-shrink: 0;
   overflow-y: auto;
+  border-right: 1px solid #ddd;
 }
 
 .email-content {
   flex: 1;
   display: flex;
   overflow: hidden;
+  position: relative;
+}
+
+.email-detail-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  background: white;
+  padding: 20px;
+}
+
+.back-button {
+  background: #f0f0f0;
+  border: none;
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.back-button:hover {
+  background: #e0e0e0;
 }
 
 /* CategoryFilter.jsx */
@@ -292,6 +392,7 @@ body {
   flex: 1;
   padding: 1rem;
   overflow-y: auto;
+  position: relative;
 }
 
 .email-detail .email-subject {
@@ -300,7 +401,35 @@ body {
   margin: 0.5rem 0;
 }
 
+.email-detail-actions {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+.urgent-button {
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.urgent-button:hover {
+  background-color: #e0e0e0;
+}
+
+.urgent-button.urgent-active {
+  background-color: #ffeb3b;
+  border-color: #ffc107;
+  font-weight: bold;
+}
+
 .email-detail-header {
+  margin-top: 10px;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #eee;
@@ -343,6 +472,103 @@ body {
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
+}
+
+/* EditCategoryPage.jsx */
+/* 编辑页面样式 */
+.edit-category-page {
+  padding: 20px;
+}
+
+.edit-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.edit-section h2 {
+  margin-top: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.prompt-form textarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-family: inherit;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.save-button, .cancel-button, .add-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.save-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.cancel-button {
+  background-color: #f0f0f0;
+}
+
+.add-button {
+  background-color: #2196F3;
+  color: white;
+  margin-left: 10px;
+}
+
+.prompt-display {
+  padding: 15px;
+  background: #f9f9f9;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.prompt-display:hover {
+  background: #f0f0f0;
+}
+
+.add-category-form {
+  display: flex;
+  align-items: center;
+}
+
+.add-category-form input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.edit-categories-button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 20px;
+  background-color: #673AB7;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-categories-button:hover {
+  background-color: #5E35B1;
 }
 
 /* Responsive design */

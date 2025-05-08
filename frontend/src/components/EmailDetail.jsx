@@ -5,6 +5,14 @@ const EmailDetail = ({ email, onToggleUrgent }) => {
   console.log("RENDERING EMAIL DETAIL: ", email);
   return (
     <div className={`email-detail ${email.read_status ? 'read' : 'unread'}`}>
+      <div className="email-detail-actions">
+        <button
+          onClick={() => onToggleUrgent(email.email_id, email.urgent_status)}
+          className={`urgent-button ${email.urgent_status ? 'urgent-active' : ''}`}
+        >
+          {email.urgent_status ? '★ Urgent' : 'Mark as Urgent'}
+        </button>
+      </div>
       <div className="email-detail-header">
         <div className="email-sender-detail">
           <div><strong>From:</strong> {email.from_email}</div>
@@ -31,12 +39,6 @@ const EmailDetail = ({ email, onToggleUrgent }) => {
         className="email-body"
         dangerouslySetInnerHTML={{ __html: email.email_body }}
       />
-      <button 
-        onClick={() => onToggleUrgent(email.email_id, email.urgent_status)}
-        className={email.urgent_status ? 'urgent-active' : ''}
-      >
-        {email.urgent_status ? '★ Urgent' : 'Mark as Urgent'}
-      </button>
     </div>
   );
 };

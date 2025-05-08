@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import EmailList from './components/EmailList';
 import EmailDetail from './components/EmailDetail';
 import CategoryFilter from './components/CategoryFilter';
+import EditCategoryPage from './components/EditCategoryPage';
 import { 
   fetchCategories,
   fetchEmailsByCategory,
@@ -13,8 +14,8 @@ import {
 } from './api/emailService';
 import './styles.css';
 
-//const API_URL = "http://localhost:3000"
-const API_URL = "http://18.224.100.253:8080"
+const API_URL = "http://localhost:3000"
+//const API_URL = "http://18.224.100.253:8080"
 
 function App() {
   const [selectedEmail, setSelectedEmail] = useState(null);
@@ -23,6 +24,8 @@ function App() {
   const [importancePrompt, setImportancePrompt] = useState('');
   const [allEmails, setAllEmails] = useState([]);
   const [filteredEmails, setFilteredEmails] = useState([]);
+  const [showEmailList, setShowEmailList] = useState(true);
+  const [showEditPage, setShowEditPage] = useState(false);
   //const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -77,6 +80,7 @@ function App() {
       const freshEmail = await fetchEmailById(email.email_id);
       console.log("freshEmail: ", freshEmail);
       setSelectedEmail(freshEmail);
+      setShowEmailList(false);
       await updateReadStatus(email.email_id, true);
       setAllEmails(allEmails.map(e => 
         e.email_id === freshEmail.email_id ? { ...e, read_status: true } : e
@@ -88,6 +92,17 @@ function App() {
       console.error("Failed to load email details:", error);
       setSelectedEmail(email);
     }
+  };
+
+  const handleBackToList = () => {
+    setShowEditPage(false);
+    setShowEmailList(true);
+    setSelectedEmail(null);
+  };
+
+  const handleNavigateToEdit = () => {
+    setShowEditPage(true);
+    setShowEmailList(false);
   };
 
   const handleUpdateImportancePrompt = async (newPrompt) => {
@@ -131,7 +146,6 @@ function App() {
     }
   };
 
-
   const getCategoryCounts = () => {
     const counts = { all: allEmails.length };
     console.log("getCategory Function, the counts: ", counts)
@@ -170,7 +184,21 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1>Email Classifier</h1>
+        <div className="header-container">
+          <div className="logo-container">
+            <svg className="logo-icon" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M22 8V16C22 17.1 21.1 18 20 18H6L2 22V4C2 2.9 2.9 2 4 2H20C21.1 2 22 2.9 22 4V8M20 8V4H4V17.2L5.2 16H20V8M7 9H9V11H7V9M11 9H13V11H11V9M15 9H17V11H15V9Z" />
+            </svg>
+            <h1 className="app-title">Email<span className="title-highlight">Classifier</span></h1>
+          </div>
+          <div className="header-actions">
+            <button className="header-button">
+              <svg className="icon" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </header>
       <div className="main-content">
         <aside className="sidebar">
@@ -180,21 +208,37 @@ function App() {
             onCategoryChange={handleCategoryChange}
             categoryCounts={getCategoryCounts()}
             importancePrompt={importancePrompt}
-            onUpdateImportancePrompt={handleUpdateImportancePrompt}
-            onAddCategories = {handleAddCategories}
+            onNavigateToEdit={handleNavigateToEdit}
+            //onUpdateImportancePrompt={handleUpdateImportancePrompt}
+            //onAddCategories = {handleAddCategories}
           />
         </aside>
         <main className="email-content">
-          <EmailList 
-            emails={filteredEmails} 
-            onSelectEmail={handleSelectEmail}
-            selectedEmailId={selectedEmail?.email_id}
-          />
-          {selectedEmail && (
-            <EmailDetail 
-            email={selectedEmail} 
-            onToggleUrgent = {toggleUrgentStatus}
+        {showEditPage ? (
+            <EditCategoryPage
+              importancePrompt={importancePrompt}
+              onUpdateImportancePrompt={handleUpdateImportancePrompt}
+              onAddCategories={handleAddCategories}
+              onBack={handleBackToList}
             />
+          ) : showEmailList ? (
+            <EmailList 
+              emails={filteredEmails} 
+              onSelectEmail={handleSelectEmail}
+              selectedEmailId={selectedEmail?.email_id}
+            />
+          ) : (
+            <div className="email-detail-container">
+              <button onClick={handleBackToList} className="back-button">
+                ← Back to List
+              </button>
+              {selectedEmail && (
+                <EmailDetail 
+                  email={selectedEmail} 
+                  onToggleUrgent={toggleUrgentStatus}
+                />
+              )}
+            </div>
           )}
         </main>
       </div>
