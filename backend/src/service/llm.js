@@ -36,7 +36,7 @@ class llm_classifier {
 
   async classify(email, update_flag) {
     try {
-      const { email_id, timestamp, from_email, email_subject, email_body } = email;
+      const { email_id, timestamp, from_email, email_subject, email_body,to_email } = email;
       console.log(`Processing email #${email_id} from_email ${from_email}`);
 
       // filled the prompt
@@ -98,7 +98,7 @@ class llm_classifier {
           email_id: email_id,
           timestamp: timestamp,
           from_email: from_email,
-          to_email: to,
+          to_email: to_email,
           email_subject: email_subject,
           email_body: email_body,
           category: llmResponse.classification?.category || "Unknown",
