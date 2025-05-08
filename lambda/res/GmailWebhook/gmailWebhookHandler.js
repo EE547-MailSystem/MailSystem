@@ -57,6 +57,7 @@ exports.handler = async (event) => {
       const parsed = await simpleParser(buffer);
 
       await sendMessage({
+        id: email.data.id,
         email_id: email.data.id,
         from_email: parsed.from?.text,
         to_email: parsed.to?.text,
