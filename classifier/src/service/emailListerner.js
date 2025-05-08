@@ -19,11 +19,11 @@ const startEmailListener = async () => {
     await receiveMessage(sqs, (email) => {
       if (
         !email ||
-        !email.id ||
+        !email.email_id ||
         !email.timestamp ||
-        !email.to ||
-        !email.from ||
-        !email.body
+        !email.to_email ||
+        !email.from_email ||
+        !email.email_body
       ) {
         console.log(`email-${email["id"]} parameter missing`);
         return;
