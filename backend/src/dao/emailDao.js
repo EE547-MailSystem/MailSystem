@@ -171,7 +171,7 @@ class EmailDao {
         return null;
       }
       console.error("Update failed:", err);
-      throw err;
+      // throw err;
     }
   }
 
@@ -204,7 +204,7 @@ class EmailDao {
         return null;
       }
       console.error("Update failed:", err);
-      throw err;
+      // throw err;
     }
   }
 
@@ -239,6 +239,47 @@ class EmailDao {
       throw err;
     }
   }
+
+
+  async resetAllUrgentStatus() {
+
+    // 2️⃣ 分页查询：用你的 GSI 拿到所有 global="ALL" 的 items
+    const params = {
+      TableName: "email",
+      IndexName: "global-timestamp-update-index",
+      KeyConditionExpression: "#glob = :globVal",
+      ExpressionAttributeNames: { "#glob": "global" },
+      ExpressionAttributeValues: { ":globVal": "ALL" }
+    };
+  
+    let lastKey = undefined;
+    const allItems = [];
+  
+    do {
+      const resp = await this.docClient.send(
+        new QueryCommand({ ...params, ExclusiveStartKey: lastKey })
+      );
+      allItems.push(...resp.Items);
+      lastKey = resp.LastEvaluatedKey;
+    } while (lastKey);
+  
+    console.log(`Found ${allItems.length} items; updating urgent_status → false...`);
+  
+    // 3️⃣ 逐条更新（如果量特别大，可并发或分 batch）
+    for (const item of allItems) {
+      await this.docClient.send(
+        new UpdateCommand({
+          TableName: "email",
+          Key: { email_id: item.email_id },
+          UpdateExpression: "SET urgent_status = :u",
+          ExpressionAttributeValues: { ":u": false }
+        })
+      );
+    }
+  
+    console.log("All done! 🎉");
+  }
+
 }
 
 // export this

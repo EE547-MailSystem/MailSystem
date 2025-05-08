@@ -2,9 +2,12 @@ const { ChatGroq } = require("@langchain/groq");
 const { HumanMessage, SystemMessage } = require("@langchain/core/messages");
 const { getSecret } = require("../utils/secretManager");
 
-const user_attention = "";
-const emailDao = require("../dao/emailDao");
 
+const { ChatOpenAI } = require("@langchain/openai");
+
+
+// const user_attention = "";
+const emailDao = require("../dao/emailDao");
 class llm_classifier {
   constructor(user_attention) {
     this.category = [
@@ -20,13 +23,14 @@ class llm_classifier {
   }
 
   async init() {
-    const secret = await getSecret("langchain/api");
-    this.client = new ChatGroq({
-      apiKey: secret.GROQ_API_KEY,
-      model: "llama-3.3-70b-versatile",
+    const secret_api = await getSecret("openai/api");
+    const secret_prompt = await getSecret("langchain/api");
+    this.client = new ChatOpenAI({
+      openAIApiKey: secret_api.OPENAI_API_KEY,
+      modelName: "gpt-4o-mini",  // 或者 gpt-4
       temperature: 0,
     });
-    this.rawPrompt = secret.CLASSILIER_PROMPT;
+    this.rawPrompt = secret_prompt.CLASSILIER_PROMPT;
     return this;
   }
 
@@ -36,7 +40,7 @@ class llm_classifier {
       console.log(`Processing email #${email_id} from_email ${from_email}`);
 
       // filled the prompt
-      const filledPrompt = this.rawPrompt
+      let filledPrompt = this.rawPrompt
         .replace(
           "{CATEGORY_TYPES}",
           this.category.map((t) => `"${t}"`).join(", ")
@@ -45,6 +49,11 @@ class llm_classifier {
         .replace("{FROM_EMAIL}", from_email)
         .replace("{EMAIL_BODY}", email_body);
 
+      // filled the user_attention part
+      if (this.user_attention) {
+         filledPrompt = filledPrompt.replace("{USER_ATTENTION}", this.user_attention);
+      }
+
       const messages = [
         new SystemMessage(
           "You are an email classifier. Respond with a valid JSON object in the specified format."
@@ -52,10 +61,6 @@ class llm_classifier {
         new HumanMessage(filledPrompt),
       ];
 
-      // filled the user_attention part
-      if (this.user_attention) {
-        filledPrompt.replace("{USER_ATTENTION}", user_attention);
-      }
       const result = await this.client.invoke(messages);
 
       // Parse the JSON response from LLM
@@ -65,6 +70,7 @@ class llm_classifier {
           .replace(/^```[\s\S]*?\n/, "")
           .replace(/```$/, "")
           .trim();
+          // llmResponse = await this.parser.parse(result.content);
         llmResponse = JSON.parse(result.content);
       } catch (e) {
         console.error("Failed to parse LLM response:", result.content);
@@ -158,11 +164,12 @@ class llm_classifier {
 
   async updateAttention(user_prompt){
     this.user_attention = user_prompt;
+    await emailDao.resetAllUrgentStatus();
     // get all data
-    const allData = emailDao.queryAllCategoryUpdate();
+    const allData = await emailDao.queryAllCategoryUpdate();
 
-    for (data in allData) {
-      await this.classify(data, update_flag = "update_urgent");
+    for (const data of allData) {
+      await this.classify(data, "update_urgent");
     }
   } 
 
