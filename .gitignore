@@ -37,5 +37,6 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+*.zip
 
 test.js

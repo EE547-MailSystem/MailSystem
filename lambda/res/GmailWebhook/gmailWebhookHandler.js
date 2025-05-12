@@ -44,8 +44,6 @@ exports.handler = async (event) => {
 
     const messages = history.data.history?.flatMap((h) => h.messages) || [];
 
-    log.info("Fetched new emails", { count: messages.length });
-
     for (const msg of messages) {
       const email = await gmail.users.messages.get({
         userId: "me",
@@ -57,23 +55,21 @@ exports.handler = async (event) => {
       const buffer = Buffer.from(raw, "base64");
 
       const parsed = await simpleParser(buffer);
-      log.info("Fetched new email", {
-        emailId: email.data.id,
-        from: parsed.from?.text,
-        subject: parsed.subject,
-      });
 
       await sendMessage({
         id: email.data.id,
-        from: parsed.from?.text,
-        to: parsed.to?.text,
-        subject: parsed.subject,
+        email_id: email.data.id,
+        from_email: parsed.from?.text,
+        to_email: parsed.to?.text,
+        email_subject: parsed.subject,
         timestamp: parsed.date?.toString(),
-        body: parsed.html || parsed.textAsHtml || parsed.text,
+        email_body: parsed.html || parsed.textAsHtml || parsed.text,
       });
 
       log.info("Pushed email to SQS", {
         emailId: email.data.id,
+        from: parsed.from?.text,
+        subject: parsed.subject,
       });
     }
 
